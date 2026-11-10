@@ -27,8 +27,8 @@ Skills encode the workflows, quality gates, and best practices that senior engin
 Think of this as a checklist for your AI coding agent (Claude Code, Cursor, Codex, Copilot, etc.) — the same checklist a careful senior engineer follows, written down so the agent follows it too, every time:
 
 1. **Write down what you're building before any code** (`/spec`).
-2. **Break it into small, checkable steps** (`/plan-features`).
-3. **Build one step at a time, testing as you go** (`/build`).
+2. **Break it into features (use cases) and small, checkable tasks** (`/plan-features`).
+3. **Build one task at a time, testing as you go** (`/build`).
 4. **Prove it actually works** (`/test`).
 5. **Have it checked for quality and security before merging** (`/review`).
 6. **Ship it safely** (`/ship`).
