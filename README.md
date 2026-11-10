@@ -4,9 +4,7 @@
 
 Skills encode the workflows, quality gates, and best practices that senior engineers use when building software. These ones are packaged so AI agents follow them consistently across every phase of development.
 
-<a href="https://trendshift.io/repositories/25200" target="_blank"><img src="https://trendshift.io/api/badge/repositories/25200" alt="addyosmani%2Fagent-skills | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-
-![Addy's Agent Skills](https://addyosmani.com/assets/images/addys-agent-skills.jpg)
+> **This fork.** This pack started from Addy Osmani's original agent-skills workflows and adds one thing on top: a concrete **Feature × Task × Vertical-Slice** planning model for Python-backend / TypeScript-frontend monorepos — every Feature gets its own `features/<name>/{backend,frontend}` slice, broken into small, independently verifiable Tasks. See [Features × Tasks & Vertical Slices](#features--tasks--vertical-slices) below. Credit for the base pack's workflows goes to Addy Osmani and the upstream contributors — see [Team](#team).
 
 ```
   DEFINE          PLAN           BUILD          VERIFY         REVIEW          SHIP
@@ -48,24 +46,23 @@ Skills also activate automatically based on what you're doing — designing an A
 **Fastest path — any agent, one command.** The open [skills CLI](https://github.com/vercel-labs/skills) installs into 70+ agents (Claude Code, Cursor, Codex, Copilot, Cline, and more):
 
 ```bash
-npx skills add addyosmani/agent-skills            # install all 25 skills
-npx skills add addyosmani/agent-skills --list     # browse before installing
+npx skills add rodrigobv-cit/agent-skills            # install all 26 skills
+npx skills add rodrigobv-cit/agent-skills --list     # browse before installing
 ```
 
 Or grab individual skills:
 
 ```bash
-npx skills add addyosmani/agent-skills --skill code-review-and-quality   # five-axis review before merge
-npx skills add addyosmani/agent-skills --skill interview-me              # requirements interrogation, one question at a time
-npx skills add addyosmani/agent-skills --skill test-driven-development   # red-green-refactor, enforced
+npx skills add rodrigobv-cit/agent-skills --skill code-review-and-quality   # five-axis review before merge
+npx skills add rodrigobv-cit/agent-skills --skill interview-me              # requirements interrogation, one question at a time
+npx skills add rodrigobv-cit/agent-skills --skill test-driven-development   # red-green-refactor, enforced
 ```
 
 > **Installing one skill?** A per-skill `npx` install copies only
 > `skills/<name>/`, not the repo-level `references/` directory. The skill still
 > works, but paths to supplementary shared checklists are unavailable. Use a
 > whole-repo integration, clone the repository, or copy the needed checklist into
-> a `references/` directory inside the installed skill. This portability gap is
-> tracked in [#361](https://github.com/addyosmani/agent-skills/issues/361).
+> a `references/` directory inside the installed skill.
 
 Prefer a native integration? Pick your tool below.
 
@@ -75,14 +72,14 @@ Prefer a native integration? Pick your tool below.
 **Marketplace install:**
 
 ```
-/plugin marketplace add addyosmani/agent-skills
-/plugin install agent-skills@addy-agent-skills
+/plugin marketplace add rodrigobv-cit/agent-skills
+/plugin install agent-skills@rodrigobv-agent-skills-fork
 ```
 
 > **SSH errors?** The marketplace clones repos via SSH. If you don't have SSH keys set up on GitHub, either [add your SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) or use the full HTTPS URL to force HTTPS cloning during the marketplace-add step:
 > ```bash
-> /plugin marketplace add https://github.com/addyosmani/agent-skills.git
-> /plugin install agent-skills@addy-agent-skills
+> /plugin marketplace add https://github.com/rodrigobv-cit/agent-skills.git
+> /plugin install agent-skills@rodrigobv-agent-skills-fork
 > ```
 >
 > If `/plugin install` still fails with `git@github.com: Permission denied (publickey)` on Windows or macOS, the recommended workaround is to configure Git once to rewrite GitHub SSH URLs to HTTPS for subprocess clones:
@@ -93,7 +90,7 @@ Prefer a native integration? Pick your tool below.
 **Local / development:**
 
 ```bash
-git clone https://github.com/addyosmani/agent-skills.git
+git clone https://github.com/rodrigobv-cit/agent-skills.git
 claude --plugin-dir /path/to/agent-skills
 ```
 
@@ -114,13 +111,13 @@ Install as a native plugin for skills and subagents. In affected Antigravity CLI
 **Install from the repo:**
 
 ```bash
-agy plugin install https://github.com/addyosmani/agent-skills.git
+agy plugin install https://github.com/rodrigobv-cit/agent-skills.git
 ```
 
 **Install from a local clone:**
 
 ```bash
-git clone https://github.com/addyosmani/agent-skills.git
+git clone https://github.com/rodrigobv-cit/agent-skills.git
 agy plugin install ./agent-skills
 ```
 
@@ -134,7 +131,7 @@ Install as native skills for auto-discovery, or add to `GEMINI.md` for persisten
 **Install from the repo:**
 
 ```bash
-gemini skills install https://github.com/addyosmani/agent-skills.git --path skills
+gemini skills install https://github.com/rodrigobv-cit/agent-skills.git --path skills
 ```
 
 **Install from a local clone:**
@@ -181,7 +178,7 @@ Using the standalone `copilot` CLI? Install it as a plugin — see [docs/copilot
 Install as a native Codex plugin (Codex CLI v0.122+):
 
 ```bash
-codex plugin marketplace add addyosmani/agent-skills
+codex plugin marketplace add rodrigobv-cit/agent-skills
 codex plugin add agent-skills@agent-skills
 ```
 
@@ -195,9 +192,9 @@ The first command registers the marketplace; the second installs the plugin. Cod
 Install natively with the built-in `cmd skills` command. Command Code clones the repo, discovers every `SKILL.md`, and installs into `.commandcode/skills/`:
 
 ```bash
-cmd skills add addyosmani/agent-skills            # pick skills to install (project)
-cmd skills add addyosmani/agent-skills --global   # install for all projects (~/.commandcode/skills/)
-cmd skills add addyosmani/agent-skills -s spec-driven-development  # install a specific skill
+cmd skills add rodrigobv-cit/agent-skills            # pick skills to install (project)
+cmd skills add rodrigobv-cit/agent-skills --global   # install for all projects (~/.commandcode/skills/)
+cmd skills add rodrigobv-cit/agent-skills -s spec-driven-development  # install a specific skill
 ```
 
 Installed skills show up in the TUI slash menu, e.g. `/spec-driven-development`. See [docs/commandcode-setup.md](docs/commandcode-setup.md).
@@ -221,9 +218,9 @@ Already installed? How you roll the pack out depends on your codebase. The **[Ad
 
 ---
 
-## All 25 Skills
+## All 26 Skills
 
-The commands above are entry points. The pack includes 25 skills total — 24 lifecycle skills plus the `using-agent-skills` meta-skill. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
+The commands above are entry points. This repo's catalog is 26 skills total — 25 lifecycle skills (24 from upstream plus this fork's `vertical-slice-for-each-task`) plus the `using-agent-skills` meta-skill. Each skill is a structured workflow with steps, verification gates, and anti-rationalization tables. You can also reference any skill directly.
 
 ### Meta - Discover which skill applies
 
@@ -245,6 +242,7 @@ The commands above are entry points. The pack includes 25 skills total — 24 li
 | Skill | What It Does | Use When |
 |-------|-------------|----------|
 | [planning-and-task-breakdown](skills/planning-and-task-breakdown/SKILL.md) | Decompose specs into small, verifiable tasks with acceptance criteria and dependency ordering | You have a spec and need implementable units |
+| [vertical-slice-for-each-task](skills/vertical-slice-for-each-task/SKILL.md) *(fork-only)* | Scaffolds one `features/<name>/{backend,frontend}` folder per Feature and enforces isolation between slices | A Feature needs its slice scaffolded, or you're deciding whether code belongs in a slice or in `shared/` |
 
 ### Build - Write the code
 
@@ -284,6 +282,28 @@ The commands above are entry points. The pack includes 25 skills total — 24 li
 | [documentation-and-adrs](skills/documentation-and-adrs/SKILL.md) | Architecture Decision Records, API docs, inline documentation standards - document the *why* | Making architectural decisions, changing APIs, or shipping features |
 | [observability-and-instrumentation](skills/observability-and-instrumentation/SKILL.md) | Structured logging, RED metrics, OpenTelemetry tracing, symptom-based alerting - instrument as you build | Adding telemetry, or shipping anything that runs in production |
 | [shipping-and-launch](skills/shipping-and-launch/SKILL.md) | Pre-launch checklists, feature flag lifecycle, staged rollouts, rollback procedures, monitoring setup | Preparing to deploy to production |
+
+---
+
+## Features × Tasks & Vertical Slices
+
+This fork's addition on top of the base pack: a concrete planning-to-disk model, split across two skills — `planning-and-task-breakdown` (the breakdown) and `vertical-slice-for-each-task` (the on-disk enforcement).
+
+```
+ Spec                1 Use Case = 1 Feature         1 Feature = 1 Vertical Slice        1 Feature = N Tasks
+ ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ spec-driven-   ──▶  planning-and-task-      ──▶   vertical-slice-for-        ──▶   Task 1  (S/XS, testable)
+ development          breakdown                     each-task                       Task 2  (S/XS, testable)
+  "capability"                                       features/<name>/                Task 3  (S/XS, testable)
+                                                       ├── backend/
+                                                       └── frontend/
+```
+
+- **Features × Tasks.** A Spec decomposes into Use Cases (what `spec-driven-development` calls capabilities). `planning-and-task-breakdown` turns each Use Case into exactly one **Feature**, then breaks that Feature into small, independently verifiable **Tasks** — each sized S/XS (1-2 files), with its own acceptance criteria and verification steps, so an agent can implement, test, and commit it in one focused pass. Features are sized too (XS→XL); anything L or larger gets split into another Feature instead of growing in place.
+- **Vertical slice.** Instead of building all the database, then all the API, then all the UI, each Feature is built as one complete path through the stack. `vertical-slice-for-each-task` gives that path a physical home: every Feature gets its own `features/<name>/{backend,frontend}` folder pair, isolated from every other Feature's slice. Cross-cutting infrastructure (auth guards, DB pooling, design primitives) lives in `shared/` and only `shared/` — it never holds business logic, and `shared/` never imports from `features/`.
+- **Why both together.** The slice is where a Feature's Tasks land; the Task breakdown is what makes the slice buildable in small, reviewable steps instead of one large drop. A Feature isn't "done" because its folder exists — it's done when every Task inside it is implemented, tested, and verified against its own acceptance criteria, and no slice imports from a sibling slice.
+
+See [`planning-and-task-breakdown`](skills/planning-and-task-breakdown/SKILL.md) for the Feature/Task breakdown process and [`vertical-slice-for-each-task`](skills/vertical-slice-for-each-task/SKILL.md) for the on-disk layout and boundary rules (including the full monorepo tree in [`references/monorepo-layout.md`](skills/vertical-slice-for-each-task/references/monorepo-layout.md)).
 
 ---
 
@@ -355,14 +375,14 @@ The portable core stays in shared directories. Host-specific paths are native di
 
 | Layer / consumer | Repository paths | Purpose |
 |---|---|---|
-| Shared workflow core | `skills/` (25 skills) | Portable `SKILL.md` workflows used by every integration |
+| Shared workflow core | `skills/` (26 skills) | Portable `SKILL.md` workflows used by every integration |
 | Shared review material | `agents/` (4 personas), `references/` (7 checklists) | Specialist reviewers and pack-level checklists carried by whole-repo installs |
 | Claude Code adapter | `.claude/commands/` (9 commands), `.claude-plugin/`, `hooks/` | Slash-command wrappers, marketplace metadata, and lifecycle hooks |
 | Gemini CLI adapter | `.gemini/commands/` (9 commands) | Gemini-native TOML command wrappers |
 | Antigravity CLI adapter | `commands/` (9 commands), `plugin.json` | Legacy TOML wrappers and the root plugin manifest; see the [known wrapper limitation](docs/antigravity-setup.md#lifecycle-workflows-and-command-compatibility) |
 | Codex adapter | `.codex-plugin/`, `.agents/plugins/` | Codex plugin metadata and marketplace registration; Codex consumes `skills/` directly |
 | GitHub Copilot CLI adapter | `plugin.json` | Root plugin metadata; Copilot CLI discovers `skills/` by convention and does not register the lifecycle wrappers |
-| Contributor tooling | `scripts/` (13 scripts), `evals/` (25 case files), `.github/workflows/` | Validation, routing evals, and CI |
+| Contributor tooling | `scripts/` (15 scripts), `evals/` (25 case files), `.github/workflows/` | Validation, routing evals, and CI |
 | Documentation | `docs/` | Universal guidance and per-tool setup guides |
 
 Tools without a checked-in adapter directory install or copy the shared `skills/` core into their own native location. The [Quick Start](#quick-start) links the setup guide for each supported host.
