@@ -4,7 +4,7 @@
 
 Skills encode the workflows, quality gates, and best practices that senior engineers use when building software. These ones are packaged so AI agents follow them consistently across every phase of development.
 
-> **This fork.** This pack started from Addy Osmani's original agent-skills workflows and adds one thing on top: a concrete **Feature × Task × Vertical-Slice** planning model for Python-backend / TypeScript-frontend monorepos — every Feature gets its own `features/<name>/{backend,frontend}` slice, broken into small, independently verifiable Tasks. See [Features × Tasks & Vertical Slices](#features--tasks--vertical-slices) below. Credit for the base pack's workflows goes to Addy Osmani and the upstream contributors — see [Team](#team).
+> **This fork.** This pack started from Addy Osmani's original agent-skills workflows and adds one thing on top: a concrete **Feature × Task × Vertical-Slice** planning model for Python-backend / TypeScript-frontend monorepos — every Feature gets its own `features/<name>/{backend,frontend}` slice, broken into small, independently verifiable Tasks. See [Features × Tasks & Vertical Slices](#features--tasks--vertical-slices) below. Credit for the base pack's workflows goes to Addy Osmani and the upstream contributors.
 
 ![The six-stage Agent Skills lifecycle: Define, Plan, Build, Verify, Review, Ship, each mapped to a slash command](docs/images/lifecycle-pipeline.svg)
 
@@ -323,9 +323,36 @@ This fork's addition on top of the base pack: a concrete planning-to-disk model,
                                                        └── frontend/
 ```
 
-- **Features × Tasks.** A Spec decomposes into Use Cases (what `spec-driven-development` calls capabilities). `planning-and-task-breakdown` turns each Use Case into exactly one **Feature**, then breaks that Feature into small, independently verifiable **Tasks** — each sized S/XS (1-2 files), with its own acceptance criteria and verification steps, so an agent can implement, test, and commit it in one focused pass. Features are sized too (XS→XL); anything L or larger gets split into another Feature instead of growing in place.
-- **Vertical slice.** Instead of building all the database, then all the API, then all the UI, each Feature is built as one complete path through the stack. `vertical-slice-for-each-task` gives that path a physical home: every Feature gets its own `features/<name>/{backend,frontend}` folder pair, isolated from every other Feature's slice. Cross-cutting infrastructure (auth guards, DB pooling, design primitives) lives in `shared/` and only `shared/` — it never holds business logic, and `shared/` never imports from `features/`.
-- **Why both together.** The slice is where a Feature's Tasks land; the Task breakdown is what makes the slice buildable in small, reviewable steps instead of one large drop. A Feature isn't "done" because its folder exists — it's done when every Task inside it is implemented, tested, and verified against its own acceptance criteria, and no slice imports from a sibling slice.
+- **Features × Tasks.** A Spec is just a list of Use Cases — the things your app needs to do (`spec-driven-development` calls these "capabilities"). `planning-and-task-breakdown` turns each Use Case into one **Feature**, then splits that Feature into small **Tasks**. Every Task is sized S or XS — 1-2 files — with its own acceptance criteria and a way to verify it's done, small enough that an agent can build, test, and commit it in one sitting. Features get a size too, from XS to XL; if one comes out L or bigger, it gets split into two Features instead of growing in place.
+- **Vertical slice.** The usual way to build is horizontal: all the database first, then all the API, then all the UI. This model builds the other way — top to bottom, one Feature at a time. `vertical-slice-for-each-task` gives each Feature a physical home for that: a `features/<name>/` folder holding its own `backend/` and `frontend/` code, kept separate from every other Feature. Shared plumbing — auth checks, database connections, design components — lives in exactly one place, `shared/`, and nowhere else: it never contains business logic, and it never reaches into `features/`.
+- **Why both together.** The slice is where a Feature's Tasks actually live; the Task breakdown is what lets that slice get built in small, checkable steps instead of one big risky drop. A Feature counts as done only once every Task inside it is built, tested, and verified against its own acceptance criteria — and nothing in its slice reaches into another Feature's slice.
+
+### Example
+
+Say your Spec has this Use Case: **"A user can reset their password."**
+
+1. `/plan-features` turns it into one Feature: `password-reset`.
+2. It splits that Feature into Tasks small enough to build and verify one at a time:
+   - Task 1 — the "forgot password" form (frontend)
+   - Task 2 — the API endpoint that issues a reset token (backend)
+   - Task 3 — the logic that checks the token and updates the password (backend)
+3. `vertical-slice-for-each-task` scaffolds one folder for all of it:
+
+   ```
+   src/features/password-reset/
+   ├── backend/
+   │   ├── models.py        # the reset-token table
+   │   ├── schemas.py       # request/response shapes
+   │   ├── service.py       # token-checking + password-update logic
+   │   ├── router.py        # the API endpoint
+   │   └── test_password_reset.py
+   └── frontend/
+       ├── api/              # calls the endpoint above
+       ├── components/       # the forgot-password form
+       └── index.ts          # the only part other code may import
+   ```
+
+What *doesn't* go in this folder: the login-check middleware and the database connection pool, because every Feature uses those, not just this one — they live in `src/shared/` instead. And what this Feature must never do: `import` something directly from `src/features/login/`. If `password-reset` needs data that login owns, it goes through a shared service, an event, or a database relation — never a direct import between two Features.
 
 See [`planning-and-task-breakdown`](skills/planning-and-task-breakdown/SKILL.md) for the Feature/Task breakdown process and [`vertical-slice-for-each-task`](skills/vertical-slice-for-each-task/SKILL.md) for the on-disk layout and boundary rules (including the full monorepo tree in [`references/monorepo-layout.md`](skills/vertical-slice-for-each-task/references/monorepo-layout.md)).
 
@@ -434,18 +461,6 @@ Wondering how this stacks up against [Superpowers](https://github.com/obra/super
 Skills should be **specific** (actionable steps, not vague advice), **verifiable** (clear exit criteria with evidence requirements), **battle-tested** (based on real workflows), and **minimal** (only what's needed to guide the agent).
 
 See [docs/skill-anatomy.md](docs/skill-anatomy.md) for the format specification, [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines, and [docs/advanced-per-agent-configuration.md](docs/advanced-per-agent-configuration.md) for applying model routing, tool restrictions, and other per-agent runtime controls without breaking the portable `SKILL.md` frontmatter.
-
----
-
-## Team
-
-agent-skills is built and maintained by:
-
-| | Name | GitHub | Role |
-|---|------|--------|------|
-| <img src="https://github.com/addyosmani.png?size=120" width="60" height="60" alt="Addy Osmani"> | **Addy Osmani** | [@addyosmani](https://github.com/addyosmani) | Creator |
-| <img src="https://github.com/federicobartoli.png?size=120" width="60" height="60" alt="Federico Bartoli"> | **Federico Bartoli** | [@federicobartoli](https://github.com/federicobartoli) | Collaborator |
-| <img src="https://github.com/nucliweb.png?size=120" width="60" height="60" alt="Joan León"> | **Joan León** | [@nucliweb](https://github.com/nucliweb) | Collaborator |
 
 ---
 
