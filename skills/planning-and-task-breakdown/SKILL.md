@@ -1,19 +1,22 @@
 ---
 name: planning-and-task-breakdown
-description: Breaks work into ordered tasks. Use when you have a spec or clear requirements and need to break work into implementable tasks. Use when a task feels too large to start, when you need to estimate scope, or when parallel work is possible.
+description: Breaks work into ordered Features and Tasks. Use when you have a spec or clear requirements and need to break work into implementable units. Use when a task feels too large to start, when you need to estimate scope, or when parallel work is possible.
 ---
 
 # Planning and Task Breakdown
 
 ## Overview
 
-Decompose work into small, verifiable tasks with explicit acceptance criteria. Good task breakdown is the difference between an agent that completes work reliably and one that produces a tangled mess. Every task should be small enough to implement, test, and verify in a single focused session.
+A Spec is made of several Use Cases. Each Use Case becomes one Feature, and each Feature is scaffolded as one vertical slice (backend + frontend) using the `vertical-slice-for-each-task` skill. Decompose each Feature into small, verifiable Tasks with explicit acceptance criteria. Good task breakdown is the difference between an agent that completes work reliably and one that produces a tangled mess. Every task should be small enough to implement, test, and verify in a single focused session.
+
+"Use Case" here is the same concept the `spec-driven-development` skill calls a "capability" in its capability map — one Use Case/capability in the Spec, one Feature here.
 
 ## When to Use
 
-- You have a spec and need to break it into implementable units
-- A task feels too large or vague to start
-- Work needs to be parallelized across multiple agents or sessions
+- You have a Spec and need to break it into Features and their implementable units (Tasks)
+- A Feature is a set of Tasks, and every Feature must trace back to a Use Case in the Spec
+- A Feature feels too large or vague to start
+- Work needs to be broken into Tasks and, if possible, parallelized across multiple agents or sessions
 - You need to communicate scope to a human
 - The implementation order isn't obvious
 
@@ -25,9 +28,9 @@ Decompose work into small, verifiable tasks with explicit acceptance criteria. G
 
 Before writing any code, operate in read-only mode:
 
-- Read the spec and relevant codebase sections
+- Read the Spec and relevant codebase sections
 - Identify existing patterns and conventions
-- Map dependencies between components
+- Map dependencies between Features and between Tasks within a Feature
 - Note risks and unknowns
 
 **Do NOT write code during planning.** The output is a plan document saved to `tasks/plan.md` and a task list recorded in the task list target (see Output Files; default `tasks/todo.md`), not implementation.
@@ -56,7 +59,7 @@ Implementation order follows the dependency graph bottom-up: build foundations f
 
 ### Step 3: Slice Vertically
 
-Instead of building all the database, then all the API, then all the UI — build one complete feature path at a time:
+Instead of building all the database, then all the API, then all the UI — build one complete Feature path at a time:
 
 **Bad (horizontal slicing):**
 ```
@@ -68,13 +71,18 @@ Task 4: Connect everything
 
 **Good (vertical slicing):**
 ```
-Task 1: User can create an account (schema + API + UI for registration)
-Task 2: User can log in (auth schema + API + UI for login)
-Task 3: User can create a task (task schema + API + UI for creation)
-Task 4: User can view task list (query + API + UI for list view)
+Feature 1: User can create an account (schema + API + UI for registration)
+  Task 1: Build the GUI for account registration
+  Task 2: Build the API that connects frontend and backend for registration
+  Task 3: Build the backend logic to create an account
+
+Feature 2: User can log in (auth schema + API + UI for login)
+  Task 1: Build the GUI for login
+  Task 2: Build the API that connects frontend and backend for login
+  Task 3: Build the backend logic to authenticate a login
 ```
 
-Each vertical slice delivers working, testable functionality.
+Each vertical slice corresponds to one Feature and delivers working, testable functionality. Every Feature must be broken into Tasks. Scaffold each Feature's slice using the `vertical-slice-for-each-task` skill, which defines the on-disk layout (one `features/<name>/{backend,frontend}` pair per Feature) and the boundary rules between slices.
 
 ### Step 4: Write Tasks
 
@@ -83,7 +91,7 @@ Each task follows this structure, whether it lands in the markdown task list or 
 ```markdown
 ## Task [N]: [Short descriptive title]
 
-**Description:** One paragraph explaining what this task accomplishes.
+**Description:** One sentence explaining what this task accomplishes.
 
 **Acceptance criteria:**
 - [ ] [Specific, testable condition]
@@ -105,12 +113,15 @@ Each task follows this structure, whether it lands in the markdown task list or 
 
 ### Step 5: Order and Checkpoint
 
-Arrange tasks so that:
+Arrange Features and Tasks so that:
 
 1. Dependencies are satisfied (build foundation first)
-2. Each task leaves the system in a working state
-3. Verification checkpoints occur after every 2-3 tasks
-4. High-risk tasks are early (fail fast)
+2. Each Task leaves the system in a working state
+3. Verification checkpoints occur after every 2-3 Tasks
+4. High-risk Tasks are early (fail fast)
+5. 1 Feature = 1 Use Case from the Spec (state the Use Case number explicitly)
+6. 1 Feature = 1 vertical slice (one backend and one frontend)
+7. 1 Feature is composed of N Tasks; each Task can be validated separately
 
 Add explicit checkpoints to the task list target:
 
@@ -122,7 +133,7 @@ Add explicit checkpoints to the task list target:
 - [ ] Review with human before proceeding
 ```
 
-## Task Sizing Guidelines
+## Feature Sizing Guidelines
 
 | Size | Files | Scope | Example |
 |------|-------|-------|---------|
@@ -130,20 +141,20 @@ Add explicit checkpoints to the task list target:
 | **S** | 1-2 | One component or endpoint | Add a new API endpoint |
 | **M** | 3-5 | One feature slice | User registration flow |
 | **L** | 5-8 | Multi-component feature | Search with filtering and pagination |
-| **XL** | 8+ | **Too large — break it down further** | — |
+| **XL** | 8+ | **Too large — split into another Feature** | — |
 
-If a task is L or larger, it should be broken into smaller tasks. An agent performs best on S and M tasks.
+If a Feature is L or larger, split it into another Feature rather than growing it in place. Every Feature is composed of Tasks, and Tasks should always be sized S or XS — an agent performs best on S/XS Tasks.
 
-**When to break a task down further:**
+**When to split a Feature, or break a Task down further:**
 - It would take more than one focused session (roughly 2+ hours of agent work)
 - You cannot describe the acceptance criteria in 3 or fewer bullet points
 - It touches two or more independent subsystems (e.g., auth and billing)
-- You find yourself writing "and" in the task title (a sign it is two tasks)
+- You find yourself writing "and" in the Feature or Task title (a sign it is two of them)
 
 ## Output Files
 
 - **Plan document:** Save the implementation plan to `tasks/plan.md`. This is always a markdown file — design decisions, risks, and open questions don't map cleanly onto individual tracker issues.
-- **Task list:** Record each task in the **task list target** (defined below).
+- **Task list:** Record each Feature's Tasks in the **task list target** (defined below).
 
 Create the `tasks/` directory if it does not exist.
 
@@ -156,17 +167,17 @@ The same rule applies to an external task list target: never bulk-close or delet
 
 ### Task List Target
 
-The task list target is where tasks and checkpoints are recorded. It is defined once, here; every other reference in this skill defers to it.
+The task list target is where Features, Tasks, and checkpoints are recorded. It is defined once, here; every other reference in this skill defers to it.
 
-- **Default: a checklist-style markdown file at `tasks/todo.md`.** This is the convention the `/build` command and other downstream tooling expect. Use it unless the project says otherwise.
-- **External tracker:** if the project's agent rules (`CLAUDE.md`, `AGENTS.md`, etc.) or the user designate an issue tracker (e.g. GitHub Issues, Jira, Linear, `bd`/beads), create one tracker item per task instead of writing `tasks/todo.md`. Map the Step 4 structure onto the tracker's fields: acceptance criteria and verification steps in the item body, dependencies via the tracker's linking mechanism (`bd dep add`, "blocked by", etc.). Record Step 5 checkpoints as tracker items too, or as a checklist in the plan document if the tracker has no natural equivalent.
+- **Default: a single checklist-style markdown file at `tasks/todo.md`, organized into one section per Feature, each containing that Feature's Tasks.** This is the convention the `/build` command and other downstream tooling expect. Use it unless the project says otherwise.
+- **External tracker:** if the project's agent rules (`CLAUDE.md`, `AGENTS.md`, etc.) or the user designate an issue tracker (e.g. GitHub Issues, Jira, Linear, `bd`/beads), create one tracker item per Task instead of writing `tasks/todo.md`, grouped under a parent/epic tracker item per Feature where the tracker supports it. Map the Step 4 structure onto the tracker's fields: acceptance criteria and verification steps in the item body, dependencies via the tracker's linking mechanism (`bd dep add`, "blocked by", etc.). Record Step 5 checkpoints as tracker items too, or as a checklist in the plan document if the tracker has no natural equivalent.
 
 When using an external tracker, note it in `tasks/plan.md` (e.g. "Tasks tracked in Linear project FOO") so downstream steps and future sessions know where to look, and keep the plan document's Task List section as an ordered index of tracker item IDs or links rather than a duplicate checklist.
 
 ## Plan Document Template
 
 ```markdown
-# Implementation Plan: [Feature/Project Name]
+# Implementation Plan: [Project Name]
 
 ## Overview
 [One paragraph summary of what we're building]
@@ -175,28 +186,27 @@ When using an external tracker, note it in `tasks/plan.md` (e.g. "Tasks tracked 
 - [Key decision 1 and rationale]
 - [Key decision 2 and rationale]
 
-## Task List
+## Features List and Task List
 
-### Phase 1: Foundation
+### Feature 1: [Name] (Use Case [N])
+- [ ] Task 1: ...
+- [ ] Task 2: ...
+- [ ] Task 3: ...
+
+### Checkpoint: Feature 1 complete
+- [ ] All tests pass, builds clean
+- [ ] Feature's end-to-end flow works
+
+### Feature 2: [Name] (Use Case [N])
 - [ ] Task 1: ...
 - [ ] Task 2: ...
 
-### Checkpoint: Foundation
-- [ ] Tests pass, builds clean
-
-### Phase 2: Core Features
-- [ ] Task 3: ...
-- [ ] Task 4: ...
-
-### Checkpoint: Core Features
-- [ ] End-to-end flow works
-
-### Phase 3: Polish
-- [ ] Task 5: ...
-- [ ] Task 6: ...
+### Checkpoint: Feature 2 complete
+- [ ] All tests pass, builds clean
+- [ ] Feature's end-to-end flow works
 
 ### Checkpoint: Complete
-- [ ] All acceptance criteria met
+- [ ] All acceptance criteria met across every Feature
 - [ ] Ready for review
 
 ## Risks and Mitigations
@@ -208,13 +218,13 @@ When using an external tracker, note it in `tasks/plan.md` (e.g. "Tasks tracked 
 - [Question needing human input]
 ```
 
-When tasks live in an external tracker, keep the Task List section above as an ordered index of tracker item IDs or links instead of a duplicate checklist.
+When tasks live in an external tracker, keep the Features List and Task List section above as an ordered index of tracker item IDs or links instead of a duplicate checklist.
 
 ## Parallelization Opportunities
 
 When multiple agents or sessions are available:
 
-- **Safe to parallelize:** Independent feature slices, tests for already-implemented features, documentation
+- **Safe to parallelize:** Independent Features (separate vertical slices with no shared API contract) are the primary parallelization unit; also tests for already-implemented features, and documentation
 - **Must be sequential:** Database migrations, shared state changes, dependency chains
 - **Needs coordination:** Features that share an API contract (define the contract first, then parallelize)
 
@@ -235,23 +245,29 @@ When multiple agents or sessions are available:
 - Writing `tasks/todo.md` when the project has designated an external tracker (or scattering tasks across both)
 - Tasks that say "implement the feature" without acceptance criteria
 - No verification steps in the plan
-- All tasks are XL-sized
-- No checkpoints between tasks
+- All Features are XL-sized
+- A Feature with no corresponding Use Case in the Spec
+- A Task sized larger than S/XS
+- No checkpoints between Features
 - Dependency order isn't considered
 
 ## Verification
 
 Before starting implementation, confirm:
 
-- [ ] Every task has acceptance criteria
-- [ ] Every task has a verification step
+- [ ] Every Feature maps to exactly one Use Case in the Spec
+- [ ] Each Feature's slice follows the `vertical-slice-for-each-task` skill's layout
+- [ ] Every Task has acceptance criteria
+- [ ] Every Task has a verification step
 - [ ] Task dependencies are identified and ordered correctly
 - [ ] Tasks are recorded in the task list target (default `tasks/todo.md`)
 - [ ] No pre-existing incomplete plan was overwritten without explicit user confirmation
-- [ ] No task touches more than ~5 files
-- [ ] Checkpoints exist between major phases
+- [ ] No Task exceeds S size (≤2 files); larger work is split into another Feature, not a bigger Task
+- [ ] Checkpoints exist between Features
 - [ ] The human has reviewed and approved the plan
 
 ## See Also
 
 Acceptance criteria are per-task and answer "did we build the right thing?". They sit on top of the project-wide Definition of Done, the standing bar every task clears before it counts as done. See `../../references/definition-of-done.md`.
+
+Use the `vertical-slice-for-each-task` skill to scaffold and verify each Feature's on-disk slice. Use Cases/Features originate from the `spec-driven-development` skill's capability map.
