@@ -22,7 +22,7 @@ Skills encode the workflows, quality gates, and best practices that senior engin
 
 </details>
 
-## What is this, in plain English?
+## How to use it
 
 Think of this as a checklist for your AI coding agent (Claude Code, Cursor, Codex, Copilot, etc.) — the same checklist a careful senior engineer follows, written down so the agent follows it too, every time:
 
