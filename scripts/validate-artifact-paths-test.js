@@ -43,7 +43,7 @@ afterEach(() => {
 test('passes when producers and consumers use the canonical artifact paths', () => {
   const root = makeSandbox();
   writeFile(root, '.claude/commands/spec.md', 'Save the spec as `SPEC.md` in the project root.\n');
-  writeFile(root, '.claude/commands/plan.md', 'Save the plan to `tasks/plan.md` and task list to `tasks/todo.md`.\n');
+  writeFile(root, '.claude/commands/plan-features.md', 'Save the plan to `tasks/plan.md` and task list to `tasks/todo.md`.\n');
   writeFile(root, '.claude/commands/build.md', 'Look for a spec at `SPEC.md`, `docs/SPEC.md`, or under `spec/`. Require `tasks/plan.md`.\n');
   writeFile(root, 'skills/spec-driven-development/SKILL.md', 'Save the plan to `tasks/plan.md` and the task list to `tasks/todo.md`.\n');
   writeFile(root, 'skills/planning-and-task-breakdown/SKILL.md', 'Save to `tasks/plan.md` and `tasks/todo.md`.\n');
@@ -58,7 +58,7 @@ test('fails when a producer drifts to an unapproved artifact path (the #93 regre
   const root = makeSandbox();
   // Only the producers are changed to the per-feature layout; consumers stay on the old paths.
   writeFile(root, '.claude/commands/spec.md', 'Save the spec to `docs/features/[feature-name]/spec.md`.\n');
-  writeFile(root, '.claude/commands/plan.md', 'Save the plan to `docs/features/[feature-name]/plan.md`.\n');
+  writeFile(root, '.claude/commands/plan-features.md', 'Save the plan to `docs/features/[feature-name]/plan.md`.\n');
   writeFile(root, '.claude/commands/build.md', 'Require a spec at `SPEC.md` and a plan at `tasks/plan.md`.\n');
 
   const result = run(root);
@@ -71,12 +71,12 @@ test('fails when a producer drifts to an unapproved artifact path (the #93 regre
 
 test('reports the offending file and line number', () => {
   const root = makeSandbox();
-  writeFile(root, '.claude/commands/plan.md', 'Intro line.\nSave the plan to `plan.md` in the root.\n');
+  writeFile(root, '.claude/commands/plan-features.md', 'Intro line.\nSave the plan to `plan.md` in the root.\n');
 
   const result = run(root);
 
   assert.equal(result.status, 1, result.stdout + result.stderr);
-  assert.match(result.stdout, /\.claude\/commands\/plan\.md/);
+  assert.match(result.stdout, /\.claude\/commands\/plan-features\.md/);
   assert.match(result.stdout, /L2:/);
 });
 
@@ -155,7 +155,7 @@ test('fails when a Gemini command drifts while the Claude Code copy stays canoni
 
 test('fails when a root TOML consumer drifts away from the producers', () => {
   const root = makeSandbox();
-  writeFile(root, 'commands/planning.toml', 'prompt = """\nSave the plan to `tasks/plan.md` and the task list to `tasks/todo.md`.\n"""\n');
+  writeFile(root, 'commands/plan-features.toml', 'prompt = """\nSave the plan to `tasks/plan.md` and the task list to `tasks/todo.md`.\n"""\n');
   writeFile(root, 'commands/build.toml', 'prompt = """\nRead the plan from `planning/plan.md` before starting.\n"""\n');
 
   const result = run(root);
@@ -169,7 +169,7 @@ test('passes when all three command surfaces agree on the canonical paths', () =
   const root = makeSandbox();
   for (const dir of ['.claude/commands', '.gemini/commands', 'commands']) {
     const ext = dir === '.claude/commands' ? 'md' : 'toml';
-    const planStem = dir === '.claude/commands' ? 'plan' : 'planning';
+    const planStem = 'plan-features';
     writeFile(root, `${dir}/spec.${ext}`, 'Save the spec as `SPEC.md`.\n');
     writeFile(root, `${dir}/${planStem}.${ext}`, 'Save to `tasks/plan.md` and `tasks/todo.md`.\n');
     writeFile(root, `${dir}/build.${ext}`, 'Require `SPEC.md` or `docs/SPEC.md`, and `tasks/plan.md`.\n');

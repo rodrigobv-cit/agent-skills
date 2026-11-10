@@ -129,7 +129,7 @@ The `.claude/commands/` directory contains slash commands for Claude Code:
 |---------|---------------|
 | `/spec` | spec-driven-development |
 | `/constraints` | constraint-driven-development |
-| `/plan` | planning-and-task-breakdown |
+| `/plan-features` | planning-and-task-breakdown |
 | `/build` | incremental-implementation + test-driven-development |
 | `/build auto` | planning-and-task-breakdown → incremental-implementation + test-driven-development (whole plan, one approval) |
 | `/test` | test-driven-development |
@@ -170,7 +170,7 @@ This portability gap is tracked in
 
 ## Spec and task artifacts
 
-The `/spec` and `/plan` commands create working artifacts (`SPEC.md`, `tasks/plan.md`, `tasks/todo.md`). Treat them as **living documents** while the work is in progress:
+The `/spec` and `/plan-features` commands create working artifacts (`SPEC.md`, `tasks/plan.md`, `tasks/todo.md`). Treat them as **living documents** while the work is in progress:
 
 - Keep them in version control during development so the human and the agent have a shared source of truth.
 - Update them when scope or decisions change.
@@ -193,7 +193,7 @@ The same artifacts are the handoff between sessions. For a small task, run the w
 
 A shell-level "Ralph loop" is harness behavior, not a separate skill workflow. If you use one, restart only after the current task has reached a recorded boundary; on re-entry, read the durable artifacts and repository state before selecting the next pending task. A process exit is not evidence that a task passed, and a restart must not bypass an approval gate. See the `context-engineering` skill's **Restartable Session Boundaries** section for the handoff checklist.
 
-This doesn't need the `/spec` and `/plan` wrappers — plain requests work in any agent, including a `npx skills add` install that only has the skills:
+This doesn't need the `/spec` and `/plan-features` wrappers — plain requests work in any agent, including a `npx skills add` install that only has the skills:
 
 > Read SPEC.md, then break it into small verifiable tasks with acceptance criteria and dependency order. Save them to tasks/plan.md and tasks/todo.md. No product code yet — show me the plan first.
 

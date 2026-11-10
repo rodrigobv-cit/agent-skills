@@ -33,7 +33,7 @@ The agent should automatically map user intent to skills:
 
 ### Lifecycle Mapping (Implicit Commands)
 
-OpenCode does not support slash commands like `/spec` or `/plan`.
+OpenCode does not support slash commands like `/spec` or `/plan-features`.
 
 Instead, the agent must internally follow this lifecycle:
 

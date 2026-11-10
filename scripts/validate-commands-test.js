@@ -63,17 +63,37 @@ afterEach(() => {
   }
 });
 
-test('passes matching command twins and maps plan to planning', () => {
+test('passes matching command twins with identical stems', () => {
   const root = makeSandbox();
-  const description = 'Break work into ordered tasks';
-  writeClaudeCommand(root, 'plan', `description: ${description}`);
-  writeTomlCommand(root, path.join('.gemini', 'commands'), 'planning', `description = '${description}'`);
-  writeTomlCommand(root, 'commands', 'planning', `description = '${description}'`);
+  writeMatchingCommands(root, 'plan-features', 'Break work into ordered tasks');
 
   const result = run(root);
 
   assert.equal(result.status, 0, result.stdout + result.stderr);
-  assert.match(result.stdout, /✓  plan \(planning in toml dirs\)/);
+  assert.match(result.stdout, /✓  plan-features$/m);
+  assert.match(result.stdout, /1 commands checked — 0 error\(s\) — PASSED/);
+});
+
+// NAME_MAP exists for the case where a stem legitimately differs between the
+// Claude .md directory and the TOML dirs (true today for no command — all
+// three surfaces agree on every stem, plan-features included — but the
+// mechanism stays, so it's covered independent of any real entry in it).
+test('NAME_MAP maps a divergent Claude stem to its TOML stem', () => {
+  const root = makeSandbox();
+  const validatorSrc = fs
+    .readFileSync(VALIDATOR, 'utf8')
+    .replace('const NAME_MAP = {};', "const NAME_MAP = { review: 'reviewing' };");
+  fs.writeFileSync(path.join(root, 'scripts', 'validate-commands.js'), validatorSrc);
+
+  const description = 'Review a change';
+  writeClaudeCommand(root, 'review', `description: ${description}`);
+  writeTomlCommand(root, path.join('.gemini', 'commands'), 'reviewing', `description = '${description}'`);
+  writeTomlCommand(root, 'commands', 'reviewing', `description = '${description}'`);
+
+  const result = run(root);
+
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /✓  review \(reviewing in toml dirs\)/);
   assert.match(result.stdout, /1 commands checked — 0 error\(s\) — PASSED/);
 });
 

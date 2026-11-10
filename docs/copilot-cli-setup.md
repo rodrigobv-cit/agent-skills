@@ -40,7 +40,7 @@ In an interactive session, `/skills list` shows the same catalog.
 The root `plugin.json` is the manifest Copilot CLI reads. It takes precedence over `.claude-plugin/plugin.json`, which belongs to Claude Code. Its `$schema` line declares an [Agent Plugins 1.0.0](https://agent-plugins.org) manifest, which switches the CLI into Agent Plugins mode. The manifest sets no component paths, so they fall back to their defaults:
 
 - **Skills: available.** With no explicit path, the CLI uses the conventional `skills/` directory, and the skills are discovered there.
-- **Lifecycle commands: not available.** In Agent Plugins mode the CLI reads commands only from `com.github.copilot/commands/`, which this repo doesn't have, so nothing registers `/spec`, `/plan`, `/build`, `/test`, `/review` or `/ship`. Those files live in `.claude/commands/` and are Claude Code commands.
+- **Lifecycle commands: not available.** In Agent Plugins mode the CLI reads commands only from `com.github.copilot/commands/`, which this repo doesn't have, so nothing registers `/spec`, `/plan-features`, `/build`, `/test`, `/review` or `/ship`. Those files live in `.claude/commands/` and are Claude Code commands.
 
 For manifest precedence and the per-component path defaults, see the [CLI plugin reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference) and [Creating plugins](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/plugins-creating).
 

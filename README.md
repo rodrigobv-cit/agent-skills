@@ -6,25 +6,45 @@ Skills encode the workflows, quality gates, and best practices that senior engin
 
 > **This fork.** This pack started from Addy Osmani's original agent-skills workflows and adds one thing on top: a concrete **Feature × Task × Vertical-Slice** planning model for Python-backend / TypeScript-frontend monorepos — every Feature gets its own `features/<name>/{backend,frontend}` slice, broken into small, independently verifiable Tasks. See [Features × Tasks & Vertical Slices](#features--tasks--vertical-slices) below. Credit for the base pack's workflows goes to Addy Osmani and the upstream contributors — see [Team](#team).
 
+![The six-stage Agent Skills lifecycle: Define, Plan, Build, Verify, Review, Ship, each mapped to a slash command](docs/images/lifecycle-pipeline.svg)
+
+<details>
+<summary>Text version of the diagram above</summary>
+
 ```
   DEFINE          PLAN           BUILD          VERIFY         REVIEW          SHIP
  ┌──────┐      ┌──────┐      ┌──────┐      ┌──────┐      ┌──────┐      ┌──────┐
  │ Idea │ ───▶ │ Spec │ ───▶ │ Code │ ───▶ │ Test │ ───▶ │  QA  │ ───▶ │  Go  │
  │Refine│      │  PRD │      │ Impl │      │Debug │      │ Gate │      │ Live │
  └──────┘      └──────┘      └──────┘      └──────┘      └──────┘      └──────┘
-  /spec          /plan          /build        /test         /review       /ship
+  /spec       /plan-features     /build        /test         /review       /ship
 ```
+
+</details>
+
+## What is this, in plain English?
+
+Think of this as a checklist for your AI coding agent (Claude Code, Cursor, Codex, Copilot, etc.) — the same checklist a careful senior engineer follows, written down so the agent follows it too, every time:
+
+1. **Write down what you're building before any code** (`/spec`).
+2. **Break it into small, checkable steps** (`/plan-features`).
+3. **Build one step at a time, testing as you go** (`/build`).
+4. **Prove it actually works** (`/test`).
+5. **Have it checked for quality and security before merging** (`/review`).
+6. **Ship it safely** (`/ship`).
+
+Each step above is a slash command — you type it in your AI coding tool, and it loads the right "skill" (a detailed instruction set) automatically. You don't have to memorize anything; typing `/spec` is enough to kick off step 1.
 
 ---
 
 ## Commands
 
-9 slash commands that map to the development lifecycle. Each one activates the right skills automatically.
+9 slash commands that map to the development lifecycle. Each one activates the right skills automatically — you don't need to know which skill does what, just which step you're on.
 
 | What you're doing | Command | Key principle |
 |-------------------|---------|---------------|
 | Define what to build | `/spec` | Spec before code |
-| Plan how to build it | `/plan` | Small, atomic tasks |
+| Plan how to build it | `/plan-features` | Small, atomic tasks |
 | Build incrementally | `/build` | One slice at a time |
 | Prove it works | `/test` | Tests are proof |
 | Set the quality bar | `/constraints` | Decide it once, enforce it everywhere |
@@ -34,6 +54,8 @@ Skills encode the workflows, quality gates, and best practices that senior engin
 | Ship to production | `/ship` | Faster is safer |
 
 In Claude Code these install as plugin commands. Where a built-in command has the same name, as `/review` does, use the namespaced form: `/agent-skills:review`.
+
+**New to this?** Just run them in order, top to bottom, on your next feature: `/spec` → `/plan-features` → `/build` → `/test` → `/review` → `/ship`. Each command tells you what it needs; if something's missing (like a spec), it'll say so instead of guessing.
 
 Want fewer manual steps once the spec exists? **`/build auto`** generates the plan and implements every task in a single approved pass — you approve the plan once, then it runs autonomously. It removes the human stepping *between* tasks, not the verification: every task is still test-driven and committed individually, and it pauses on failures or risky steps.
 
@@ -161,7 +183,7 @@ See [docs/opencode-setup.md](docs/opencode-setup.md).
 <details>
 <summary><b>GitHub Copilot</b></summary>
 
-Use agent definitions from `agents/` as Copilot personas and skill content in `.github/copilot-instructions.md`. The lifecycle slash commands (`/spec`, `/plan`, `/build`, `/test`, `/review`, `/ship`) are Claude Code commands and do not appear in Copilot; invoke the skills by name (`/spec-driven-development`, …) instead. See [docs/copilot-setup.md](docs/copilot-setup.md).
+Use agent definitions from `agents/` as Copilot personas and skill content in `.github/copilot-instructions.md`. The lifecycle slash commands (`/spec`, `/plan-features`, `/build`, `/test`, `/review`, `/ship`) are Claude Code commands and do not appear in Copilot; invoke the skills by name (`/spec-driven-development`, …) instead. See [docs/copilot-setup.md](docs/copilot-setup.md).
 
 Using the standalone `copilot` CLI? Install it as a plugin — see [docs/copilot-cli-setup.md](docs/copilot-cli-setup.md).
 
@@ -288,6 +310,8 @@ The commands above are entry points. This repo's catalog is 26 skills total — 
 ## Features × Tasks & Vertical Slices
 
 This fork's addition on top of the base pack: a concrete planning-to-disk model, split across two skills — `planning-and-task-breakdown` (the breakdown) and `vertical-slice-for-each-task` (the on-disk enforcement).
+
+> **In plain English:** when you run `/plan-features`, it doesn't just write a to-do list. It turns each thing your app needs to do (a "Use Case," like "a user can sign up") into a **Feature**, gives that Feature its own folder with both its backend and frontend code inside (a **vertical slice**, so nothing is scattered across the codebase), and splits it into small **Tasks** an agent can finish one at a time without breaking anything else.
 
 ```
  Spec                1 Use Case = 1 Feature         1 Feature = 1 Vertical Slice        1 Feature = N Tasks

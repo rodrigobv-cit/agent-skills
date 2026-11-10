@@ -4,10 +4,10 @@
  *
  * Guards the spec -> plan -> build pipeline against silent artifact-path drift.
  *
- * The `/spec` and `/plan` commands (producers) write their artifacts to a set
+ * The `/spec` and `/plan-features` commands (producers) write their artifacts to a set
  * of paths that the `/build` command and the spec/plan skills (consumers) read
  * back. When a producer moves an artifact without updating the consumers — as
- * in PR #93, which pointed `/spec` and `/plan` at docs/features/[name]/ while
+ * in PR #93, which pointed `/spec` and `/plan-features` at docs/features/[name]/ while
  * `/build` still required SPEC.md and tasks/plan.md — the pipeline breaks, and
  * nothing else in CI catches it (command parity only compares descriptions).
  *
@@ -35,8 +35,8 @@ const ROOT = path.resolve(__dirname, '..');
 const ARTIFACT_ALLOWLIST = new Set([
   'SPEC.md',        // spec, project root (produced by /spec, read by /build)
   'docs/SPEC.md',   // spec, alternate location accepted by /build
-  'tasks/plan.md',  // plan (produced by /plan, read by /build)
-  'tasks/todo.md',  // task list (produced by /plan)
+  'tasks/plan.md',  // plan (produced by /plan-features, read by /build)
+  'tasks/todo.md',  // task list (produced by /plan-features)
 ]);
 
 // The files that make up the spec -> plan -> build pipeline. Absent files are
@@ -49,15 +49,15 @@ const ARTIFACT_ALLOWLIST = new Set([
 const GUARDED_FILES = [
   // Claude Code commands
   '.claude/commands/spec.md',
-  '.claude/commands/plan.md',
+  '.claude/commands/plan-features.md',
   '.claude/commands/build.md',
   // Gemini CLI commands
   '.gemini/commands/spec.toml',
-  '.gemini/commands/planning.toml',
+  '.gemini/commands/plan-features.toml',
   '.gemini/commands/build.toml',
   // Root command set (Antigravity, Codex, and other TOML-based hosts)
   'commands/spec.toml',
-  'commands/planning.toml',
+  'commands/plan-features.toml',
   'commands/build.toml',
   // Skills the commands invoke
   'skills/spec-driven-development/SKILL.md',

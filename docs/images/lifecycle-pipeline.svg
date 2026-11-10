@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 220" width="1000" height="220" role="img" aria-label="Lifecycle pipeline: Define, Plan, Build, Verify, Review, Ship">
+  <title>Agent Skills lifecycle: /spec -&gt; /plan-features -&gt; /build -&gt; /test -&gt; /review -&gt; /ship</title>
+  <defs>
+    <style>
+      .bg   { fill: #0f172a; }
+      .card { fill: #1e293b; stroke: #334155; stroke-width: 1.5; rx: 10; }
+      .stage{ fill: #e2e8f0; font: 700 13px 'Segoe UI', Helvetica, Arial, sans-serif; letter-spacing: 1px; }
+      .sub  { fill: #94a3b8; font: 400 12px 'Segoe UI', Helvetica, Arial, sans-serif; }
+      .cmd  { fill: #5eead4; font: 600 13px 'JetBrains Mono', Consolas, 'Courier New', monospace; }
+      .arrow{ stroke: #475569; stroke-width: 2; fill: none; }
+      .arrowhead{ fill: #475569; }
+      .glow {
+        fill: none;
+        stroke: #22d3ee;
+        stroke-width: 3;
+        rx: 10;
+        opacity: 0;
+        filter: drop-shadow(0 0 6px #22d3ee);
+        animation: pulse 6s ease-in-out infinite;
+      }
+      .glow1 { animation-delay: 0s; }
+      .glow2 { animation-delay: 1s; }
+      .glow3 { animation-delay: 2s; }
+      .glow4 { animation-delay: 3s; }
+      .glow5 { animation-delay: 4s; }
+      .glow6 { animation-delay: 5s; }
+      @keyframes pulse {
+        0%   { opacity: 0; }
+        5%   { opacity: 1; }
+        16%  { opacity: 0; }
+        100% { opacity: 0; }
+      }
+      .dot {
+        fill: #22d3ee;
+        filter: drop-shadow(0 0 4px #22d3ee);
+      }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1000" height="220" rx="14"/>
+
+  <!-- baseline for the traveling dot -->
+  <path id="flow" class="arrow" d="M 90 115 L 910 115" stroke="none" fill="none"/>
+
+  <!-- connecting arrows between cards -->
+  <g class="arrow">
+    <line x1="160" y1="115" x2="196" y2="115"/>
+    <line x1="324" y1="115" x2="360" y2="115"/>
+    <line x1="488" y1="115" x2="524" y2="115"/>
+    <line x1="652" y1="115" x2="688" y2="115"/>
+    <line x1="816" y1="115" x2="852" y2="115"/>
+  </g>
+  <g class="arrowhead">
+    <path d="M 196 115 L 188 110 L 188 120 Z"/>
+    <path d="M 360 115 L 352 110 L 352 120 Z"/>
+    <path d="M 524 115 L 516 110 L 516 120 Z"/>
+    <path d="M 688 115 L 680 110 L 680 120 Z"/>
+    <path d="M 852 115 L 844 110 L 844 120 Z"/>
+  </g>
+
+  <!-- traveling highlight dot -->
+  <circle class="dot" r="5">
+    <animateMotion dur="6s" repeatCount="indefinite" path="M 90 115 L 910 115" keyPoints="0;1" keyTimes="0;1" calcMode="linear"/>
+  </circle>
+
+  <!-- Stage 1: DEFINE -->
+  <g>
+    <rect class="card" x="20" y="60" width="140" height="110" rx="10"/>
+    <rect class="glow glow1" x="20" y="60" width="140" height="110"/>
+    <text class="stage" x="90" y="85" text-anchor="middle">DEFINE</text>
+    <text class="sub" x="90" y="108" text-anchor="middle">Idea</text>
+    <text class="sub" x="90" y="124" text-anchor="middle">Refine</text>
+    <text class="cmd" x="90" y="155" text-anchor="middle">/spec</text>
+  </g>
+
+  <!-- Stage 2: PLAN -->
+  <g>
+    <rect class="card" x="184" y="60" width="140" height="110" rx="10"/>
+    <rect class="glow glow2" x="184" y="60" width="140" height="110"/>
+    <text class="stage" x="254" y="85" text-anchor="middle">PLAN</text>
+    <text class="sub" x="254" y="108" text-anchor="middle">Spec</text>
+    <text class="sub" x="254" y="124" text-anchor="middle">PRD</text>
+    <text class="cmd" x="254" y="155" text-anchor="middle">/plan-features</text>
+  </g>
+
+  <!-- Stage 3: BUILD -->
+  <g>
+    <rect class="card" x="348" y="60" width="140" height="110" rx="10"/>
+    <rect class="glow glow3" x="348" y="60" width="140" height="110"/>
+    <text class="stage" x="418" y="85" text-anchor="middle">BUILD</text>
+    <text class="sub" x="418" y="108" text-anchor="middle">Code</text>
+    <text class="sub" x="418" y="124" text-anchor="middle">Impl</text>
+    <text class="cmd" x="418" y="155" text-anchor="middle">/build</text>
+  </g>
+
+  <!-- Stage 4: VERIFY -->
+  <g>
+    <rect class="card" x="512" y="60" width="140" height="110" rx="10"/>
+    <rect class="glow glow4" x="512" y="60" width="140" height="110"/>
+    <text class="stage" x="582" y="85" text-anchor="middle">VERIFY</text>
+    <text class="sub" x="582" y="108" text-anchor="middle">Test</text>
+    <text class="sub" x="582" y="124" text-anchor="middle">Debug</text>
+    <text class="cmd" x="582" y="155" text-anchor="middle">/test</text>
+  </g>
+
+  <!-- Stage 5: REVIEW -->
+  <g>
+    <rect class="card" x="676" y="60" width="140" height="110" rx="10"/>
+    <rect class="glow glow5" x="676" y="60" width="140" height="110"/>
+    <text class="stage" x="746" y="85" text-anchor="middle">REVIEW</text>
+    <text class="sub" x="746" y="108" text-anchor="middle">QA</text>
+    <text class="sub" x="746" y="124" text-anchor="middle">Gate</text>
+    <text class="cmd" x="746" y="155" text-anchor="middle">/review</text>
+  </g>
+
+  <!-- Stage 6: SHIP -->
+  <g>
+    <rect class="card" x="840" y="60" width="140" height="110" rx="10"/>
+    <rect class="glow glow6" x="840" y="60" width="140" height="110"/>
+    <text class="stage" x="910" y="85" text-anchor="middle">SHIP</text>
+    <text class="sub" x="910" y="108" text-anchor="middle">Go</text>
+    <text class="sub" x="910" y="124" text-anchor="middle">Live</text>
+    <text class="cmd" x="910" y="155" text-anchor="middle">/ship</text>
+  </g>
+
+  <text x="500" y="202" text-anchor="middle" fill="#64748b" font="400 11px 'Segoe UI', Helvetica, Arial, sans-serif">Feature × Task × Vertical Slice runs inside Build, Verify &amp; Review</text>
+</svg>
