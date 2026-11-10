@@ -27,8 +27,8 @@ Skills encode the workflows, quality gates, and best practices that senior engin
 Think of this as a checklist for your AI coding agent (Claude Code, Cursor, Codex, Copilot, etc.) — the same checklist a careful senior engineer follows, written down so the agent follows it too, every time:
 
 1. **Write down what you're building before any code** (`/spec`).
-2. **Break it into features (use cases) and small, checkable tasks** (`/plan-features`).
-3. **Build one task at a time, testing as you go** (`/build`).
+2. **Break it into Features (use cases) and small, checkable Tasks** (`/plan-features`).
+3. **Build one Task at a time, testing as you go** (`/build`).
 4. **Prove it actually works** (`/test`).
 5. **Have it checked for quality and security before merging** (`/review`).
 6. **Ship it safely** (`/ship`).
@@ -44,9 +44,9 @@ Each step above is a slash command — you type it in your AI coding tool, and i
 | What you're doing | Command | Key principle |
 |-------------------|---------|---------------|
 | Define what to build | `/spec` | Spec before code |
-| Plan how to build it | `/plan-features` | Small, atomic tasks |
+| Plan how to build it | `/plan-features` | Small, atomic Tasks associated to a unique Feature |
 | Build incrementally | `/build` | One slice at a time |
-| Prove it works | `/test` | Tests are proof |
+| Prove it works | `/test` | Red and Green tests from Spec |
 | Set the quality bar | `/constraints` | Decide it once, enforce it everywhere |
 | Review before merge | `/review` | Improve code health |
 | Audit web performance | `/webperf` | Measure before you optimize |
@@ -55,9 +55,9 @@ Each step above is a slash command — you type it in your AI coding tool, and i
 
 In Claude Code these install as plugin commands. Where a built-in command has the same name, as `/review` does, use the namespaced form: `/agent-skills:review`.
 
-**New to this?** Just run them in order, top to bottom, on your next feature: `/spec` → `/plan-features` → `/build` → `/test` → `/review` → `/ship`. Each command tells you what it needs; if something's missing (like a spec), it'll say so instead of guessing.
+**New to this?** Just run them in order, top to bottom, on your next Feature: `/spec` → `/plan-features` → `/build` → `/test` → `/review` → `/ship`. Each command tells you what it needs; if something's missing (like a Spec), it'll say so instead of guessing.
 
-Want fewer manual steps once the spec exists? **`/build auto`** generates the plan and implements every task in a single approved pass — you approve the plan once, then it runs autonomously. It removes the human stepping *between* tasks, not the verification: every task is still test-driven and committed individually, and it pauses on failures or risky steps.
+Want fewer manual steps once the Spec exists? **`/build auto`** generates the plan and implements every Task in a single approved pass — you approve the plan once, then it runs autonomously. It removes the human stepping *between* Tasks, not the verification: every Task is still test-driven and committed individually, and it pauses on failures or risky steps.
 
 Skills also activate automatically based on what you're doing — designing an API triggers `api-and-interface-design`, building UI triggers `frontend-ui-engineering`, and so on.
 
