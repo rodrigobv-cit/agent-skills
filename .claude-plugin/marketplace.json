@@ -11,8 +11,8 @@
       "name": "agent-skills",
       "version": "0.6.15-rodrigobv.1",
       "source": {
-        "source": "github",
-        "repo": "rodrigobv-cit/agent-skills"
+        "source": "url",
+        "url": "https://github.com/rodrigobv-cit/agent-skills.git"
       },
       "description": "Production-grade engineering skills covering every phase of software development: spec, plan, build, verify, review, and ship. Includes a custom Feature/Use-Case/vertical-slice planning model.",
       "homepage": "https://github.com/rodrigobv-cit/agent-skills",

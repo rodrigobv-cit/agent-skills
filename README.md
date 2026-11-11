@@ -94,17 +94,13 @@ Prefer a native integration? Pick your tool below.
 **Marketplace install:**
 
 ```
-/plugin marketplace add rodrigobv-cit/agent-skills
+/plugin marketplace add https://github.com/rodrigobv-cit/agent-skills.git
 /plugin install agent-skills@rodrigobv-agent-skills-fork
 ```
 
-> **SSH errors?** The marketplace clones repos via SSH. If you don't have SSH keys set up on GitHub, either [add your SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) or use the full HTTPS URL to force HTTPS cloning during the marketplace-add step:
-> ```bash
-> /plugin marketplace add https://github.com/rodrigobv-cit/agent-skills.git
-> /plugin install agent-skills@rodrigobv-agent-skills-fork
-> ```
+> **Why the full HTTPS URL?** The `owner/repo` shorthand makes Claude Code clone over SSH (`git@github.com:...`), which fails with `Permission denied (publickey)` if you have no SSH key registered on GitHub. This marketplace pins the plugin source to an HTTPS URL, so install works without SSH as long as you add the marketplace with the full URL above.
 >
-> If `/plugin install` still fails with `git@github.com: Permission denied (publickey)` on Windows or macOS, the recommended workaround is to configure Git once to rewrite GitHub SSH URLs to HTTPS for subprocess clones:
+> If you still see `git@github.com: Permission denied (publickey)`, tell Git once to rewrite GitHub SSH URLs to HTTPS:
 > ```bash
 > git config --global url."https://github.com/".insteadOf git@github.com:
 > ```
